@@ -3,7 +3,7 @@ import random
 import pygame
 
 from blackJack.Card import Card
-from blackJack.constants import deck
+from blackJack.constants import deck, CHIP
 
 pygame.font.init()
 pygame.mixer.init()
@@ -39,16 +39,17 @@ class Button:
         x, y = pygame.mouse.get_pos()
         if self.rect.collidepoint(x, y):
             if self.text == "BET":
-                game.bet += 20
-                player.bank -= 20
+                if player.bank >= CHIP:
+                    game.bet += CHIP
+                    player.bank -= CHIP
             if self.text == "HIT":
                 player.cards.append(Card(deck[random.randint(0, len(deck) - 1)]))
 
             if self.text == 'STAND':
                 game.turn = 'dealer'
                 player.net_score = 21 - player.score
-            if self.text == 'play again!':
-                game.hold = True
+            if self.text == 'PLAY':
+                game.hold = False
             if self.text == 'DOUBLE':
                 game.bet += game.bet
                 player.bank -= game.bet

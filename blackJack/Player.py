@@ -3,7 +3,8 @@ import random
 import pygame
 
 from blackJack.Card import Card
-from blackJack.constants import WIDTH, WIN, BANK_FONT, WHITE, HEIGHT, deck, aces, CARD_WIDTH, BACK_IMG, CARD_SHIFT
+from blackJack.constants import WIDTH, WIN, BANK_FONT, WHITE, HEIGHT, deck, aces, CARD_WIDTH, BACK_IMG, CARD_SHIFT, \
+    BANK, DEALER_CONST, DEALER_NAME
 
 
 class Player:
@@ -12,7 +13,7 @@ class Player:
         self.make_bet = None
         self.blackjack = None
         self.bust = None
-        self.bank = 1000
+        self.bank = BANK
         self.cards = self.deal()
         self.score = self.calc_score()
         self.net_score = 21 - self.score
@@ -23,7 +24,7 @@ class Player:
 
         card1 = Card(deck[random.randint(0, len(deck) - 1)])
         card2 = Card(deck[random.randint(0, len(deck) - 1)])
-        if self.name == 'dealer':
+        if self.name == DEALER_NAME:
             card1.flip = True
         return [card1, card2]
 
@@ -32,26 +33,30 @@ class Player:
         for card in self.cards:
             if not card.flip:
                 self.score += card.val
+                if self.score > 21:
+                    self.bust = True
+                if self.score == 21:
+                    self.blackjack = True
         for card in self.cards:
             if self.score > 21 and str(card) in aces:
                 self.score -= 10
         return self.score
 
     def play(self, game):
-        self.cards[0].flip = False
+        self.cards[0].flip=False
+
         self.calc_score()
-        while self.score < 17:
-            pygame.time.delay(1000)
+        if self.score < DEALER_CONST:
             self.cards.append(Card(deck[random.randint(0, len(deck) - 1)]))
             self.calc_score()
 
-        self.calc_score()
-        while self.score < 17:
-            pygame.time.delay(1000)
-            self.cards.append(Card(deck[random.randint(0, len(deck) - 1)]))
-            self.calc_score()
+        # self.calc_score()
+        # if self.score < DEALER_CONST:
+        #     self.cards.append(Card(deck[random.randint(0, len(deck) - 1)]))
+        #     self.calc_score()
         self.net_score = 21 - self.score
-        game.turn = None
+        # if self.score >= DEALER_CONST:
+        #     game.turn = None
 
     def draw(self):
         x = WIDTH / 2 - CARD_WIDTH - 100
@@ -72,6 +77,7 @@ class Player:
                     WIN.blit(BACK_IMG, (x, y))
                     x += CARD_SHIFT
                     y -= CARD_SHIFT
+            pygame.display.update()
 
         else:
             bank_text = BANK_FONT.render(

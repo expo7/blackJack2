@@ -5,6 +5,9 @@ PLAYER_NAME = 'Brendan'
 DEALER_NAME = 'dealer'
 BLACKJACK_MULT = 3 / 2
 CARD_SHIFT = 20
+CHIP = 20
+BANK = 1000
+DEALER_CONST = 17
 
 pygame.font.init()
 WIDTH, HEIGHT = 600, 600
@@ -20,6 +23,7 @@ RED = (255, 0, 0)
 GREY = (100, 100, 100)
 GREEN = (0, 100, 0)
 BLUE = (0, 0, 255)
+RED=(255,0,0)
 FPS = 40
 values = list(range(2, 11))
 BACK_IMG = pygame.image.load(os.path.join('cards', 'back.png'))
